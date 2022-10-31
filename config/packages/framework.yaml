@@ -17,6 +17,14 @@ framework:
     php_errors:
         log: true
 
+    http_client:
+        scoped_clients:
+            tmdb.client:
+                base_uri: '%env(TMDB_BASE_URL)%'
+                query:
+                    api_key: '%env(TMDB_API_KEY)%'
+                    language: 'fr'
+
 when@test:
     framework:
         test: true
