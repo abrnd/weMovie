@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiMovie;
@@ -26,23 +27,51 @@ class MovieController extends AbstractController
         return $this->render('index.html.twig');
     }
 
-    #[Route('/api/movie', name: 'movie')]
-    public function getMovie(): Response
+    #[Route('/api/genres', name: 'genres')]
+    public function getGenres() : Response
     {
 
         $response = new Response();
+        $genres = $this->apiMovie->getGenres();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->setContent(json_encode($data));
 
+        return $response;
+    }
+
+    #[Route('/api/movies', name: 'movies')]
+    public function getMovies(Request $request): Response
+    {
+        $response = new Response();
+
+        $genreId = $request->query->get('id');
+        $movies = $this->apiMovie->getMovies($genreId);
+        
+
+        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->setContent(json_encode($movies));
+
+        return $response;
+    }
+
+    #[Route('/api/init', name: 'init')]
+    public function getInit(): Response
+    {
+
+        $response = new Response();
         
         $genres = $this->apiMovie->getGenres();
         $movies = $this->apiMovie->getPopularMovies();
+        $trailer = $this->apiMovie->getMovieTrailer($movies[0]["id"]);
+
         $data = [
             "genres" => $genres,
-            "movies" => $movies
+            "movies" => $movies,
+            "trailer" => $trailer,
         ];
 
-        $movies = $this->apiMovie->getPopularMovies();
-
-        
         $response->headers->set('Content-Type', 'application/json');
         $response->headers->set('Access-Control-Allow-Origin', '*');
 

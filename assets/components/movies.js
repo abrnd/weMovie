@@ -10,7 +10,7 @@ const Movies = ({movies}) => {
                     key={movie.id} 
                     overview={movie.overview}
                     title={movie.title}
-                    posterpath={movie.posterPath}
+                    posterpath={movie.backdrop_path}
                     vote={movie.vote_average}
                     count={movie.vote_count}
                 />

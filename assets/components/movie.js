@@ -12,27 +12,28 @@ const StyledOverview = styled.p`
     overflow: hidden;
 `;
 
+
 const Movie = ({index, overview, title, posterpath, vote, count}) => {
 
-    const rating = new Array (5);
-    const number_of_star = Math.round((vote / 2));
+
+    const img_url = "https://image.tmdb.org/t/p/original" + posterpath;
+    const rate = [];
+    const start_number = Math.round((vote / 2));
+    for(let i = 0; i < 5; i++){
+        (i < start_number) ? rate.push("★") : rate.push("☆");
+    }
 
     return(
-        <li>
-            <Card>
+        <li className="mb-3">
+            <Card  style={{ width: '40rem' }}>
                 <Row>
                     <Col md={2}>
-                        <Image>
-                        </Image>
+                        <Image src={img_url} fluid="true"/>
                     </Col>
                     <Col md={10}>
                         <Row>
                             <Col md={4}> <p className="fs-4 m-0">{title}</p></Col>
-                            <Col md={5}>
-                                {rating.map( (number_of_star, index) => {
-                                    return (index < number_of_star) ? <p>★</p> : <p>☆</p>;
-                                })}
-                            </Col>
+                            <Col md={5}>{rate.join(' ')}</Col>
                             <Col md={3}><p className="fs-6 m-0">{count}</p></Col>
 
                         </Row>

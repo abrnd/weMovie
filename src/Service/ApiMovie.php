@@ -30,17 +30,27 @@ class ApiMovie
         return $parsedResponse['results'];
     }
 
-    public function getMovies($genreId) : array
+    public function getMovieTrailer($movieId) : array
+    {
+        $url = '3/movie/'.$movieId.'/videos';
+        $result = [];
+
+        $response = $this->client->request('GET', $url);
+        $parsedResponse = $response->toArray();
+        $result = array_key_exists(0, $parsedResponse['results']) ? $parsedResponse['results'][0] : null;
+        
+        return $result;
+
+    }
+    public function getMovies($genreId = null) : array
     {
 
         $response = $this->client->request('GET', '3/discover/movie', [
             'query' => ['with_genres' => $genreId]
-        ]);
+        ]);        
         $parsedResponse = $response->toArray();
-        dump($parsedResponse);
 
-        return $parsedResponse;
-        
+        return $parsedResponse['results'];
     }
 
  }
