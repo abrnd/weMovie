@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
+
 const StyledNoSuggestions = styled.div`
     color: #999;
     padding: 0.5rem;
@@ -8,7 +9,6 @@ const StyledNoSuggestions = styled.div`
 
 const StyledSuggestions = styled.div`
     border: 1px solid #999;
-    border-top-width: 0;
     list-style: none;
     margin-top: 0;
     max-height: 143px;
@@ -86,7 +86,7 @@ const Autocomplete = ({ suggestions }) => {
     if(showSuggestions && userInput) {
         if(filteredSuggestions.length) {
             suggestionsListComponent = (
-                <StyledSuggestions>
+                <StyledSuggestions className="float-end">
                     {filteredSuggestions.map((suggestion, index) => {
                         let className;
 
@@ -103,7 +103,7 @@ const Autocomplete = ({ suggestions }) => {
             );
         } else {
             suggestionsListComponent = (
-                <StyledNoSuggestions className="no-suggestions">
+                <StyledNoSuggestions className="float-end">
                     <em>Aucune Suggestions Disponible.</em>
                 </StyledNoSuggestions>
             )
@@ -117,6 +117,7 @@ const Autocomplete = ({ suggestions }) => {
                 onChange={onChange}
                 onKeyDown={onKeyDown}
                 value={userInput}
+                className="float-end mt-2"
             />
             {suggestionsListComponent}
         </>

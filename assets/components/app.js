@@ -84,9 +84,9 @@ const App = () => {
     return(
         <>
             <Container style={{maxWidth: '878px'}}>
-                <Row>
+                <Row className="mb-5">
                     <Col><h2>We Movie</h2></Col>
-                    <Col><Autocomplete  className="float-end" suggestions={suggestionsList}  /></Col>
+                    <Col className="pr-0"><Autocomplete className="float-end" suggestions={suggestionsList}  /></Col>
                 </Row>
                 <Row>
                     <YoutubePlayer trailer = {trailer} />
