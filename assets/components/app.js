@@ -7,6 +7,7 @@ import Movies from './movies';
 import Genres from './genres';
 import YoutubePlayer from './YoutubePlayer';
 import MovieDetails from './movieDetails';
+import Autocomplete from './Autocomplete';
 
 
 
@@ -59,7 +60,6 @@ const App = () => {
         const movieId = e.target.getAttribute("data-movieid");
         const params = {id: movieId};
         axios.get(getMovie, {params}).then((response) => {
-            console.log(response.data);
             const next_details = {
                 trailer: response.data.trailer.key,
                 trailerTitle: response.data.trailer.name,
@@ -76,13 +76,17 @@ const App = () => {
     const closeModal = () => {
         setIsOpen(false);
     }
+
+    const suggestionsList = movies.map( (movie) => {
+        return movie.title;
+    })
     
     return(
         <>
             <Container style={{maxWidth: '878px'}}>
                 <Row>
                     <Col><h2>We Movie</h2></Col>
-                    <Col><input  className="float-end"  /></Col>
+                    <Col><Autocomplete  className="float-end" suggestions={suggestionsList}  /></Col>
                 </Row>
                 <Row>
                     <YoutubePlayer trailer = {trailer} />
