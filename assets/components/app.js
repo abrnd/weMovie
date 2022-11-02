@@ -1,21 +1,29 @@
 import * as React from 'react';
 import axios from 'axios';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import {Container, Row, Col} from 'react-bootstrap';
+import Modal from 'react-modal';
 
 import Movies from './movies';
 import Genres from './genres';
 import YoutubePlayer from './YoutubePlayer';
+import MovieDetails from './movieDetails';
+
+
 
 
 const getInit = "https://localhost/api/init";
 const getMovies = "https://localhost/api/movies";
+const getMovie = "https://localhost/api/movie";
+
+Modal.setAppElement('#root');
+
 const App = () => {
 
     const [movies, setMovies] = React.useState([]);
     const [genres, setGenres] = React.useState([]);
     const [trailer, setTrailer] = React.useState("");
+    const [modalIsOpen, setIsOpen] = React.useState(false);
+    const [details, setDetails] = React.useState(null);
 
 
     React.useEffect(() => {
@@ -26,16 +34,17 @@ const App = () => {
         })
     }, []);
 
+
     const handleGenreChange = (e) =>{
         const genreId = e.target.getAttribute("data-genreid");
         const index = genres.findIndex((genre) => genre.id == genreId);
 
         //uncheck all box
         genres.map( (genre) => {return genre.isChecked = false;});
-        genres[index].isChecked = event.target.checked;
+        genres[index].isChecked = e.target.checked;
         setGenres([...genres]);
 
-        //if all checkbox uncheked
+        //send request with no selected parameters
         const check = genres.every(({isChecked}) => !isChecked);
         const params = check ? {} : {id: genreId};
 
@@ -44,26 +53,58 @@ const App = () => {
             setMovies(response.data);
         });
     }
+
+    const handleDetailsClick = (e) =>{
+        const movieId = e.target.getAttribute("data-movieid");
+        console.log(movieId);
+        const params = {id: movieId};
+        axios.get(getMovie, {params}).then((response) => {
+            console.log(response.data);
+            const next_details = {
+                trailer: response.data.trailer.key,
+                trailerTitle: response.data.trailer.name,
+                title: response.data.movie.title,
+                vote: response.data.movie.vote_average,
+                voteCount: response.data.movie.vote_count
+            }
+            setDetails(next_details);
+            setIsOpen(true);
+        })
+        //open modal
+
+
+    }
+
+    const closeModal = () => {
+        setIsOpen(false);
+    }
     
     return(
-        
-        <Container>
-            <Row>
-                <YoutubePlayer trailer = {trailer} />
-            </Row>
-            <Row>
-            </Row>
-            <Row>
-                <Col md={3}>
-                    <Genres genres = {genres} onGenreChange={handleGenreChange} />
-                </Col>
-                <Col md={5}>
-                    <Movies movies = {movies}/>
-                </Col>
-            </Row>
-
-        </Container>
-        
+        <>
+            <Container>
+                <Row>
+                    <Col><h2>We Movie</h2></Col>
+                    <Col><input  className="float-end"  /></Col>
+                </Row>
+                <Row>
+                    <YoutubePlayer trailer = {trailer} />
+                </Row>
+                <Row>
+                    <Col md={2}>
+                        <Genres genres = {genres} onGenreChange={handleGenreChange} />
+                    </Col>
+                    <Col md={6}>
+                        <Movies movies = {movies} onDetailsClick={handleDetailsClick} />
+                    </Col>
+                </Row>
+            </Container>
+            <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+            >
+                <MovieDetails details={details} onClose={closeModal}/>
+            </Modal>
+        </>
     )
 }
 

@@ -11,7 +11,7 @@ use App\Service\ApiMovie;
 
 class MovieController extends AbstractController
 {
-    /*private MoviesHelper $moviesHelper; */
+
     private ApiMovie $apiMovie;
 
     public function __construct( ApiMovie $apiMovie)
@@ -33,6 +33,26 @@ class MovieController extends AbstractController
 
         $response = new Response();
         $genres = $this->apiMovie->getGenres();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->setContent(json_encode($data));
+
+        return $response;
+    }
+
+    #[Route('/api/movie', name: 'movie')]
+    public function getMovie(Request $request) : Response
+    {
+        $response = new Response();
+        $movieId = $request->query->get('id');
+        $movie = $this->apiMovie->getMovie($movieId);
+        $trailer = $this->apiMovie->getMovieTrailer($movieId);
+
+        $data = [
+            "movie" => $movie,
+            "trailer" => $trailer,
+        ];
+
         $response->headers->set('Content-Type', 'application/json');
         $response->headers->set('Access-Control-Allow-Origin', '*');
         $response->setContent(json_encode($data));

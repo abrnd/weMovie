@@ -18,10 +18,6 @@ const styledFrame = styled.iframe`
 
 const YoutubePlayer = ({trailer}) => {
     
-    console.log("trailer");
-    console.log(trailer);
-
-
     return(
         <div>
             <iframe

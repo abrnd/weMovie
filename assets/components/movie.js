@@ -1,9 +1,8 @@
 import React from 'react';
-import Card from 'react-bootstrap/Card';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Image from 'react-bootstrap/Image';
+import {Row, Col, Card, Image, Button } from 'react-bootstrap';
 import styled from 'styled-components';
+
+import rate from "../functions/rate";
 
 const StyledOverview = styled.p`
     display: -webkit-box; 
@@ -13,41 +12,48 @@ const StyledOverview = styled.p`
 `;
 
 
-const Movie = ({index, overview, title, posterpath, vote, count}) => {
 
+
+
+const Movie = ({movieid, overview, title, posterpath, vote, count, release_date, onDetailsClick}) => {
 
     const img_url = "https://image.tmdb.org/t/p/original" + posterpath;
-    const rate = [];
-    const start_number = Math.round((vote / 2));
-    for(let i = 0; i < 5; i++){
-        (i < start_number) ? rate.push("★") : rate.push("☆");
-    }
+    const rating = rate(vote);
 
+    const date = new Date(release_date);
+    
     return(
-        <li className="mb-3">
-            <Card  style={{ width: '40rem' }}>
+        <li className="mb-3 bg-light">
                 <Row>
-                    <Col md={2}>
-                        <Image src={img_url} fluid="true"/>
+                    <Col md={2} className="px-0">
+                            <Image src={img_url} fluid="true"/>
                     </Col>
+                    
                     <Col md={10}>
-                        <Row>
-                            <Col md={4}> <p className="fs-4 m-0">{title}</p></Col>
-                            <Col md={5}>{rate.join(' ')}</Col>
-                            <Col md={3}><p className="fs-6 m-0">{count}</p></Col>
-
-                        </Row>
-                        <div>
-
-                        </div>
-                        <div>
-                            <StyledOverview className="fs-6" >
-                                {overview}
-                            </StyledOverview>
-                        </div>
+                    <Card  className="border-0  bg-light" style={{ width: '40rem' }}>
+                            <Card.Header className="border-0 bg-light">
+                                <Row>
+                                    <Col md={4}> <p className="fs-5 pt-2 m-0">{title}</p></Col>
+                                    <Col md={5} className="pt-3">{rating}</Col>
+                                    <Col md={3}><p className="fs-6 pt-2 m-0">{count}</p></Col>
+                                </Row>
+                            </Card.Header>
+                            <Card.Body className="py-0">
+                            <div>
+                                <h6>{date.getFullYear()}</h6>
+                            </div>
+                            <div>
+                                <StyledOverview className="fs-6" >
+                                    {overview}
+                                </StyledOverview>
+                            </div>
+                            </Card.Body>
+                            <Card.Footer className="py-0  border-0 bg-light">
+                                <Button variant="primary" size="sm" className="float-end" data-movieid={movieid} onClick={onDetailsClick} >Lire le details</Button>
+                            </Card.Footer>
+                        </Card>
                     </Col>
                 </Row>
-            </Card>
         </li>
     )
 }

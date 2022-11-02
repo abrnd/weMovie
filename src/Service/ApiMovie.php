@@ -30,6 +30,15 @@ class ApiMovie
         return $parsedResponse['results'];
     }
 
+    public function getMovie($movieId) : array
+    {
+        $url = '3/movie/'.$movieId;
+        $response = $this->client->request('GET', $url);
+        $parsedResponse = $response->toArray();
+
+        return $parsedResponse;
+    }
+
     public function getMovieTrailer($movieId) : array
     {
         $url = '3/movie/'.$movieId.'/videos';
