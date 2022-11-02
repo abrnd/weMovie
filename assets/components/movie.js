@@ -34,13 +34,13 @@ const Movie = ({movieid, overview, title, posterpath, vote, count, release_date,
                             <Card.Header className="border-0 bg-light">
                                 <Row>
                                     <Col md={4}> <p className="fs-5 pt-2 m-0">{title}</p></Col>
-                                    <Col md={5} className="pt-3">{rating}</Col>
-                                    <Col md={3}><p className="fs-6 pt-2 m-0">{count}</p></Col>
+                                    <Col md={5} className="pt-2">{rating}</Col>
+                                    <Col md={3}><p className="fs-6 pt-2 m-0">({count} votes)</p></Col>
                                 </Row>
                             </Card.Header>
                             <Card.Body className="py-0">
                             <div>
-                                <h6>{date.getFullYear()}</h6>
+                                <p>{date.getFullYear()}</p>
                             </div>
                             <div>
                                 <StyledOverview className="fs-6" >
