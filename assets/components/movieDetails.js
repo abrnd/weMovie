@@ -5,19 +5,6 @@ import {Card, Button } from 'react-bootstrap';
 import YoutubePlayer from './YoutubePlayer';
 import rate from "../functions/rate";
 
-/*
-            <Card.Header></Card.Header>
-            <Card.body>
-                <YoutubePlayer trailer = {details.trailer} />
-                <div>{details.trailerTitle}</div>
-            </Card.body>
-            <Card.Footer>
-                {details.title}
-                {rating}
-                {details.voteCount}
-            </Card.Footer>
-*/
-
 const MovieDetails = ({details, onClose}) => {
     const rating = rate(details.vote);
 

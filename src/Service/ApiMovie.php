@@ -46,7 +46,8 @@ class ApiMovie
 
         $response = $this->client->request('GET', $url);
         $parsedResponse = $response->toArray();
-        $result = array_key_exists(0, $parsedResponse['results']) ? $parsedResponse['results'][0] : null;
+        $result = !empty($parsedResponse['results']) ? $parsedResponse['results'][0] : [];
+        //$result = array_key_exists(0, $parsedResponse['results']) ? $parsedResponse['results'][0] : null;
         
         return $result;
 

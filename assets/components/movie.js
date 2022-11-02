@@ -30,7 +30,7 @@ const Movie = ({movieid, overview, title, posterpath, vote, count, release_date,
                     </Col>
                     
                     <Col md={10}>
-                    <Card  className="border-0  bg-light" style={{ width: '40rem' }}>
+                    <Card  className="border-0  bg-light" style={{ width: '38rem' }}>
                             <Card.Header className="border-0 bg-light">
                                 <Row>
                                     <Col md={4}> <p className="fs-5 pt-2 m-0">{title}</p></Col>

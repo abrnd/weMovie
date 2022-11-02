@@ -50,13 +50,13 @@ const App = () => {
 
         axios.get(getMovies, {params})
         .then((response) => {
-            setMovies(response.data);
+            setMovies(response.data.movies);
+            setTrailer(response.data.trailer.key);
         });
     }
 
     const handleDetailsClick = (e) =>{
         const movieId = e.target.getAttribute("data-movieid");
-        console.log(movieId);
         const params = {id: movieId};
         axios.get(getMovie, {params}).then((response) => {
             console.log(response.data);
@@ -68,11 +68,9 @@ const App = () => {
                 voteCount: response.data.movie.vote_count
             }
             setDetails(next_details);
+            //open modal
             setIsOpen(true);
-        })
-        //open modal
-
-
+        });
     }
 
     const closeModal = () => {
@@ -81,7 +79,7 @@ const App = () => {
     
     return(
         <>
-            <Container>
+            <Container style={{maxWidth: '878px'}}>
                 <Row>
                     <Col><h2>We Movie</h2></Col>
                     <Col><input  className="float-end"  /></Col>

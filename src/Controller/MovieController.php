@@ -67,11 +67,19 @@ class MovieController extends AbstractController
 
         $genreId = $request->query->get('id');
         $movies = $this->apiMovie->getMovies($genreId);
-        
 
+        //get trailer of movie :
+        $trailer = !empty($movies) ? $this->apiMovie->getMovieTrailer($movies[0]['id']) : null;
+
+        
+        $data = [
+            "movies" => $movies,
+            "trailer" => $trailer,
+        ];
+        
         $response->headers->set('Content-Type', 'application/json');
         $response->headers->set('Access-Control-Allow-Origin', '*');
-        $response->setContent(json_encode($movies));
+        $response->setContent(json_encode($data));
 
         return $response;
     }
