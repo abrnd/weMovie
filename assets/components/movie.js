@@ -7,19 +7,14 @@ import rate from "../functions/rate";
 const StyledOverview = styled.p`
     display: -webkit-box; 
     -webkit-box-orient: vertical; 
-    -webkit-line-clamp: 3; 
+    -webkit-line-clamp: 3;
     overflow: hidden;
 `;
 
+const Movie = ({movieid, description, title, background, vote, count, release_date, onDetailsClick}) => {
 
-
-
-
-const Movie = ({movieid, overview, title, posterpath, vote, count, release_date, onDetailsClick}) => {
-
-    const img_url = "https://image.tmdb.org/t/p/original" + posterpath;
+    const img_url = "https://image.tmdb.org/t/p/original" + background;
     const rating = rate(vote);
-
     const date = new Date(release_date);
     
     return(
@@ -44,7 +39,7 @@ const Movie = ({movieid, overview, title, posterpath, vote, count, release_date,
                             </div>
                             <div>
                                 <StyledOverview className="fs-6" >
-                                    {overview}
+                                    {description}
                                 </StyledOverview>
                             </div>
                             </Card.Body>
@@ -58,8 +53,5 @@ const Movie = ({movieid, overview, title, posterpath, vote, count, release_date,
     )
 }
 
-const getRate = () => {
-
-}
 
 export default Movie;

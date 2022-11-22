@@ -15,11 +15,10 @@ const MovieDetails = ({details, onClose}) => {
             </Card.Header>
             <Card.Body>
                 <YoutubePlayer trailer = {details.trailer} />
-                <h5>{details.trailerTitle}</h5>
             </Card.Body>
             <Card.Footer>
                 <h6>{details.title}</h6>
-                <p>{rating} pour {details.voteCount}</p>
+                <p>{rating} pour {details.voteCount} votes</p>
             </Card.Footer>
         </Card>
 

@@ -3,6 +3,10 @@
 namespace App\Service;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use App\Mapper\MovieMapper;
+use App\Mapper\GenreMapper;
+use App\Model\Movie;
+
 
 
 class ApiMovie
@@ -18,16 +22,33 @@ class ApiMovie
 
         $response = $this->client->request('GET', '/3/genre/movie/list');
         $parsedResponse = $response->toArray();
-
-        return $parsedResponse['genres'];
+        
+        $genres = [];
+        $genreMapper = new GenreMapper();
+        foreach($parsedResponse['genres'] as $genre)
+        {
+            $genres[] = $genreMapper->mapGenre($genre);
+        }
+        return $genres;
+        
+        
     }
 
-    public function getPopularMovies() : array 
+    public function getMovies($genreId = null) : array
     {
-        $response = $this->client->request('GET', '3/movie/top_rated');
+
+        $response = $this->client->request('GET', '3/discover/movie', [
+            'query' => ['with_genres' => $genreId]
+        ]);        
         $parsedResponse = $response->toArray();
-        
-        return $parsedResponse['results'];
+        $movieMapper = new MovieMapper();
+        $movies = [];
+        foreach($parsedResponse['results'] as $movie){
+            $movies[] = $movieMapper->mapMovie($movie);
+        }
+
+
+        return $movies;
     }
 
     public function getMovie($movieId) : array
@@ -39,28 +60,14 @@ class ApiMovie
         return $parsedResponse;
     }
 
-    public function getMovieTrailer($movieId) : array
+    public function getTrailer(int $movieId) : string
     {
         $url = '3/movie/'.$movieId.'/videos';
-        $result = [];
 
         $response = $this->client->request('GET', $url);
         $parsedResponse = $response->toArray();
-        $result = !empty($parsedResponse['results']) ? $parsedResponse['results'][0] : [];
-        //$result = array_key_exists(0, $parsedResponse['results']) ? $parsedResponse['results'][0] : null;
-        
+        $result = !empty($parsedResponse['results']) ? $parsedResponse['results'][0]['key'] : "";
+
         return $result;
-
     }
-    public function getMovies($genreId = null) : array
-    {
-
-        $response = $this->client->request('GET', '3/discover/movie', [
-            'query' => ['with_genres' => $genreId]
-        ]);        
-        $parsedResponse = $response->toArray();
-
-        return $parsedResponse['results'];
-    }
-
  }

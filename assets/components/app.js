@@ -13,8 +13,8 @@ import Autocomplete from './Autocomplete';
 
 
 const getInit = "https://localhost/api/init";
-const getMovies = "https://localhost/api/movies";
-const getMovie = "https://localhost/api/movie";
+const getMovies = "https://localhost/api/movies/";
+const getMovie = "https://localhost/api/movie/";
 
 Modal.setAppElement('#root');
 
@@ -26,12 +26,11 @@ const App = () => {
     const [modalIsOpen, setIsOpen] = React.useState(false);
     const [details, setDetails] = React.useState(null);
 
-
     React.useEffect(() => {
         axios.get(getInit).then((response) => {
             setMovies(response.data.movies);
             setGenres(response.data.genres.map( ({id, name}) => { return {id, name, isChecked: false}}));
-            setTrailer(response.data.trailer.key);
+            setTrailer(response.data.movies[0].trailer);
         })
     }, []);
 
@@ -47,30 +46,31 @@ const App = () => {
 
         //send request with no selected parameters
         const check = genres.every(({isChecked}) => !isChecked);
-        const params = check ? {} : {id: genreId};
+        const url = check ? getMovies : getMovies + genreId;
 
-        axios.get(getMovies, {params})
+        axios.get(url)
         .then((response) => {
-            setMovies(response.data.movies);
-            setTrailer(response.data.trailer.key);
+            setMovies(response.data);
+            setTrailer(response.data[0].trailer);
         });
     }
 
     const handleDetailsClick = (e) =>{
         const movieId = e.target.getAttribute("data-movieid");
-        const params = {id: movieId};
-        axios.get(getMovie, {params}).then((response) => {
+        const url = getMovie + movieId;
+        axios.get(url).then((response) => {
+            const movie = movies.find(movie => movie.id === parseInt(movieId));
             const next_details = {
-                trailer: response.data.trailer.key,
-                trailerTitle: response.data.trailer.name,
-                title: response.data.movie.title,
-                vote: response.data.movie.vote_average,
-                voteCount: response.data.movie.vote_count
+                trailer: response.data,
+                title: movie.title,
+                vote: movie.vote_average,
+                voteCount: movie.vote_count,
             }
             setDetails(next_details);
             //open modal
             setIsOpen(true);
         });
+        
     }
 
     const closeModal = () => {

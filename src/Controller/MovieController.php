@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ApiMovie;
 
@@ -16,9 +16,7 @@ class MovieController extends AbstractController
 
     public function __construct( ApiMovie $apiMovie)
     {
-        
         $this->apiMovie = $apiMovie;
-        
     }
 
     #[Route('/', name: 'app_movie')]
@@ -27,84 +25,51 @@ class MovieController extends AbstractController
         return $this->render('index.html.twig');
     }
 
-    #[Route('/api/genres', name: 'genres')]
-    public function getGenres() : Response
+    #[Route('/api/init', methods: ['GET'] , name: 'init')]
+    public function getInit(): JsonResponse
     {
 
-        $response = new Response();
         $genres = $this->apiMovie->getGenres();
-        $response->headers->set('Content-Type', 'application/json');
-        $response->headers->set('Access-Control-Allow-Origin', '*');
-        $response->setContent(json_encode($data));
-
-        return $response;
-    }
-
-    #[Route('/api/movie', name: 'movie')]
-    public function getMovie(Request $request) : Response
-    {
-        $response = new Response();
-        $movieId = $request->query->get('id');
-        $movie = $this->apiMovie->getMovie($movieId);
-        $trailer = $this->apiMovie->getMovieTrailer($movieId);
-
-        $data = [
-            "movie" => $movie,
-            "trailer" => $trailer,
-        ];
-
-        $response->headers->set('Content-Type', 'application/json');
-        $response->headers->set('Access-Control-Allow-Origin', '*');
-        $response->setContent(json_encode($data));
-
-        return $response;
-    }
-
-    #[Route('/api/movies', name: 'movies')]
-    public function getMovies(Request $request): Response
-    {
-        $response = new Response();
-
-        $genreId = $request->query->get('id');
-        $movies = $this->apiMovie->getMovies($genreId);
-
-        //get trailer of movie :
-        $trailer = !empty($movies) ? $this->apiMovie->getMovieTrailer($movies[0]['id']) : null;
-
-        
-        $data = [
-            "movies" => $movies,
-            "trailer" => $trailer,
-        ];
-        
-        $response->headers->set('Content-Type', 'application/json');
-        $response->headers->set('Access-Control-Allow-Origin', '*');
-        $response->setContent(json_encode($data));
-
-        return $response;
-    }
-
-    #[Route('/api/init', name: 'init')]
-    public function getInit(): Response
-    {
-
-        $response = new Response();
-        
-        $genres = $this->apiMovie->getGenres();
-        $movies = $this->apiMovie->getPopularMovies();
-        $trailer = $this->apiMovie->getMovieTrailer($movies[0]["id"]);
+        $movies = $this->getMovies();
 
         $data = [
             "genres" => $genres,
             "movies" => $movies,
-            "trailer" => $trailer,
         ];
 
-        $response->headers->set('Content-Type', 'application/json');
-        $response->headers->set('Access-Control-Allow-Origin', '*');
-
-        $response->setContent(json_encode($data));
-
-        return $response;
+        return new JsonResponse($data);
     }
+
+    #[Route('/api/movies/{id}', methods: ['GET'] , name: 'movies')]
+    public function getMoviesByGenre(int $id = null): JsonResponse
+    {
+
+        $genreId = $id;
+        $movies = $this->getMovies($genreId);
+        
+        return new JsonResponse($movies);
+    }
+
+    private function getMovies(int $id = null) : array
+    {
+        $genreId = $id;
+        $movies = $this->apiMovie->getMovies($genreId);
+
+        //get trailer of movie :
+        $movies[0]->trailer = $this->apiMovie->getTrailer($movies[0]->id);
+
+        return $movies;
+    }
+
+    //TODO : vérifier trailer name
+    #[Route('/api/movie/{id}', methods: ['GET'] , name: 'movie')]
+    public function getMovie(int $id) : JsonResponse
+    {
+
+        $trailer = $this->apiMovie->getTrailer($id);
+
+        return new JsonResponse($trailer);
+    }
+
+
 }
