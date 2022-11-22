@@ -20,11 +20,6 @@ const StyledSuggestions = styled.div`
     }
 `
 
-const StyledActiveSuggestions = styled.div`
-
-`
-
-
 const Autocomplete = ({ suggestions }) => {
 
     const init = {
