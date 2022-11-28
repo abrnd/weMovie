@@ -1,9 +1,4 @@
-# We Movie made with  Symfony Docker
-
-
-![CI](https://github.com/dunglas/symfony-docker/workflows/CI/badge.svg)
-
-## Getting Started
+# We Movie
 
 1. If not already done, [install Docker Compose](https://docs.docker.com/compose/install/) (v2.10+)
 2. Run `docker compose build --pull --no-cache` to build fresh images
